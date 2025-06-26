@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "elwis-api"
+version = "0.1.0"
+description = ""
+authors = ["Vincent Gerber <vincent.gerber@wandelbots.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+zeep = "^4.2.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
