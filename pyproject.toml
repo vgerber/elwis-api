@@ -1,13 +1,12 @@
-[tool.poetry]
+[project]
 name = "elwis-api"
 version = "0.1.0"
 description = ""
-authors = ["Vincent Gerber <vincent.gerber@wandelbots.com>"]
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.12"
-zeep = "^4.2.1"
+dependencies = [
+    "pydantic>=2.11.7",
+    "zeep>=4.3.1",
+]
 
 
 [build-system]
