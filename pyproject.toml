@@ -4,6 +4,7 @@ version = "0.1.0"
 description = ""
 readme = "README.md"
 dependencies = [
+    "psycopg[binary]>=3.2.9",
     "pydantic>=2.11.7",
     "zeep>=4.3.1",
 ]

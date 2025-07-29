@@ -1,16 +1,11 @@
-from pydantic import RootModel
+from datetime import date
 import elwis_api.client
-from elwis_api.models import ElwisFtmMessage
-
+import psycopg
 
 client = elwis_api.client.ApiClient()
 
-messages = client.query()
-
-
-class Export(RootModel):
-    root: list[ElwisFtmMessage]
+result = client.query(date_start=date.today(), date_end=date.today())
 
 
 with open("result.json", "w") as f:
-    f.write(Export(messages).model_dump_json())
+    f.write(result.model_dump_json())

@@ -182,3 +182,20 @@ class ElwisFtmMessage(BaseModel):
 
 class RiverMessages(RootModel):
     root: list[ElwisFtmMessage]
+
+
+class Paging(BaseModel):
+    offset: int = 0
+    limit: int = 100
+    total_count: bool = True
+
+
+class PagingResult(BaseModel):
+    offset: int
+    count: int
+    total_count: Optional[int]
+
+
+class ElwisFtmQueryResponse(BaseModel):
+    paging_result: PagingResult
+    messages: list[ElwisFtmMessage]
