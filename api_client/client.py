@@ -1,7 +1,7 @@
 from datetime import date
 from zeep import Client
 
-import elwis_api.models as models
+import api_client.models as models
 
 
 class ApiClient:

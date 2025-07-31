@@ -4,12 +4,10 @@ version = "0.1.0"
 description = ""
 readme = "README.md"
 dependencies = [
-    "psycopg[binary]>=3.2.9",
+    "fastapi[standard]>=0.116.1",
     "pydantic>=2.11.7",
+    "sqlmodel>=0.0.24",
     "zeep>=4.3.1",
 ]
 
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
