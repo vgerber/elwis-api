@@ -1,3 +1,4 @@
+from asyncio.log import logger
 import datetime
 from typing import Literal, Optional
 from pydantic import BaseModel, Field, RootModel
@@ -57,7 +58,7 @@ class Communication(BaseModel):
 
 class GeoObject(BaseModel):
     id: list[ISRSLocationData]
-    name: str
+    name: Optional[str]
     type_code: str
     position_code: Optional[str]
     coordinate: list[Coordinate]
@@ -168,20 +169,20 @@ def parse_identification(obj: object) -> Identification:
     )
 
 
-class ElwisFtmMessage(BaseModel):
+class ElwisFtmItem(BaseModel):
     internal_id: Optional[str] = None
     identification: Identification
     nts_number: NtsNumber = Field(..., description="NtS (Notices to Skippers)")
     contents: Optional[str]
     reason_code: str
-    subject_code: Literal["ANNOUN", "WARNIN", "CANCEL", "INFSER"]
+    subject_code: str
     source: str
     validity_period: ValidityPeriod
     values: list[FtmValue]
 
 
 class RiverMessages(RootModel):
-    root: list[ElwisFtmMessage]
+    root: list[ElwisFtmItem]
 
 
 class Paging(BaseModel):
@@ -198,4 +199,61 @@ class PagingResult(BaseModel):
 
 class ElwisFtmQueryResponse(BaseModel):
     paging_result: PagingResult
-    messages: list[ElwisFtmMessage]
+    messages: list[ElwisFtmItem]
+
+
+def parse_ftm_message(
+    identification: Identification, ftm_message: object
+) -> ElwisFtmItem:
+    values: list[FtmValue] = []
+    for ftm_value in ftm_message["_value_1"]:
+        fairway_section: FtmFairwaySection = None
+        ftm_object: FtmObject = None
+        if "fairway_section" in ftm_value:
+            fairway_section = FtmFairwaySection(
+                value_type="fairway_section",
+                geo_object=parse_geo_object(ftm_value["fairway_section"].geo_object),
+                limitation=parse_limitation(ftm_value["fairway_section"].limitation),
+            )
+        if "object" in ftm_value:
+            ftm_object = FtmObject(
+                value_type="object",
+                geo_object=parse_geo_object(ftm_value["object"].geo_object),
+                limitation=parse_limitation(ftm_value["object"].limitation),
+            )
+        values.append(
+            FtmValue(fairway_section=fairway_section, object=ftm_object),
+        )
+
+    return ElwisFtmItem(
+        internal_id=ftm_message.internal_id,
+        identification=identification,
+        nts_number=NtsNumber(
+            number=ftm_message.nts_number.number,
+            year=ftm_message.nts_number.year[0],  # e.g. (2025, None)
+            serial_number=ftm_message.nts_number.serial_number,
+            organisation=ftm_message.nts_number.organisation,
+        ),
+        contents=ftm_message.contents,
+        source=ftm_message.source,
+        subject_code=ftm_message.subject_code,
+        reason_code=ftm_message.reason_code,
+        validity_period=ValidityPeriod(
+            start=ftm_message.validity_period.date_start,
+            end=ftm_message.validity_period.date_end,
+        ),
+        values=values,
+    )
+
+
+def parse_result_message(message: object) -> list[ElwisFtmItem]:
+    identification = parse_identification(message.identification)
+
+    messages: list[ElwisFtmItem] = []
+    for ftm_message in message.ftm:
+        try:
+            messages.append(parse_ftm_message(identification, ftm_message))
+        except Exception as e:
+            logger.error(f"Error parsing FTM message: {e}")
+            continue
+    return messages

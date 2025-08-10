@@ -2,6 +2,9 @@ from datetime import date
 from zeep import Client
 
 import api_client.models as models
+from app.logger import get_logger
+
+logger = get_logger()
 
 
 class ApiClient:
@@ -30,63 +33,14 @@ class ApiClient:
 
         result_message = response.result_message
 
-        messages: list[models.ElwisFtmMessage] = []
+        messages: list[models.ElwisFtmItem] = []
 
         for message in result_message:
-            identification = models.parse_identification(message.identification)
-
-            for ftm_message in message.ftm:
-                values: list[models.FtmValue] = []
-                for ftm_value in ftm_message["_value_1"]:
-                    fairway_section: models.FtmFairwaySection = None
-                    ftm_object: models.FtmObject = None
-                    if "fairway_section" in ftm_value:
-                        fairway_section = models.FtmFairwaySection(
-                            value_type="fairway_section",
-                            geo_object=models.parse_geo_object(
-                                ftm_value["fairway_section"].geo_object
-                            ),
-                            limitation=models.parse_limitation(
-                                ftm_value["fairway_section"].limitation
-                            ),
-                        )
-                    if "object" in ftm_value:
-                        ftm_object = models.FtmObject(
-                            value_type="object",
-                            geo_object=models.parse_geo_object(
-                                ftm_value["object"].geo_object
-                            ),
-                            limitation=models.parse_limitation(
-                                ftm_value["object"].limitation
-                            ),
-                        )
-                    values.append(
-                        models.FtmValue(
-                            fairway_section=fairway_section, object=ftm_object
-                        ),
-                    )
-
-                messages.append(
-                    models.ElwisFtmMessage(
-                        internal_id=ftm_message.internal_id,
-                        identification=identification,
-                        nts_number=models.NtsNumber(
-                            number=ftm_message.nts_number.number,
-                            year=ftm_message.nts_number.year[0],  # e.g. (2025, None)
-                            serial_number=ftm_message.nts_number.serial_number,
-                            organisation=ftm_message.nts_number.organisation,
-                        ),
-                        contents=ftm_message.contents,
-                        source=ftm_message.source,
-                        subject_code=ftm_message.subject_code,
-                        reason_code=ftm_message.reason_code,
-                        validity_period=models.ValidityPeriod(
-                            start=ftm_message.validity_period.date_start,
-                            end=ftm_message.validity_period.date_end,
-                        ),
-                        values=values,
-                    )
-                )
+            try:
+                messages += models.parse_result_message(message)
+            except Exception as e:
+                logger.error(f"Failed to parse message: {e}")
+                continue
         return models.ElwisFtmQueryResponse(
             paging_result=models.PagingResult(
                 count=response.paging_result.count,

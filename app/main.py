@@ -1,9 +1,21 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from app.database import create_db_and_tables
 from app.routes import ftm, cache
 
-app = FastAPI(redoc_url=None, docs_url=None, openapi_url="/openapi.json")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_db_and_tables()
+    yield
+    # Cleanup code can go here
+
+
+app = FastAPI(
+    redoc_url=None, docs_url=None, openapi_url="/openapi.json", lifespan=lifespan
+)
 
 app.include_router(ftm.router)
 app.include_router(cache.router)
