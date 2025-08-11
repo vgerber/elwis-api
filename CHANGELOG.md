@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/vgerber/elwis-api/compare/v1.0.1...v1.0.2) (2025-08-11)
+
+
+### Bug Fixes
+
+* Fixed docker build ([681c03c](https://github.com/vgerber/elwis-api/commit/681c03c67533c6842b53eeba4012b992b99902d1))
+
 ## [1.0.1](https://github.com/vgerber/elwis-api/compare/v1.0.0...v1.0.1) (2025-08-11)
 
 
