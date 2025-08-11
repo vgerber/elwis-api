@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/vgerber/elwis-api/compare/v1.0.0...v1.0.1) (2025-08-11)
+
+
+### Bug Fixes
+
+* Added missing dockerfile ([c205089](https://github.com/vgerber/elwis-api/commit/c205089171c48af5bbd9c10c85bd7a6962b3f7db))
+
 # 1.0.0 (2025-08-11)
 
 
