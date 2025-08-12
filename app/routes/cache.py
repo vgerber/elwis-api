@@ -69,7 +69,7 @@ def update_cache(session: SessionDep) -> None:
                 fairway_section.fairway = db_fairway
             else:
                 session.add(fairway_section.fairway)
-                logger.info(f"Added new fairway {fairway_section.fairway.name}")
+                logger.debug(f"Added new fairway {fairway_section.fairway.name}")
 
             db_message = session.exec(
                 select(ElwisFtm)
@@ -84,12 +84,12 @@ def update_cache(session: SessionDep) -> None:
                 fairway_section.ftm_message = db_message
             else:
                 session.add(fairway_section.ftm_message)
-                logger.info(
+                logger.debug(
                     f"Added new FTM message {fairway_section.ftm_message.year}-{fairway_section.ftm_message.number}-{fairway_section.ftm_message.serial_number}"
                 )
 
             session.add(fairway_section)
-            logger.info(
+            logger.debug(
                 f"Added new fairway section {fairway_section.fairway.name} for FTM {fairway_section.ftm_message.year}-{fairway_section.ftm_message.number}-{fairway_section.ftm_message.serial_number}"
             )
 

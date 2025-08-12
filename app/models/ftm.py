@@ -1,7 +1,7 @@
 import datetime
 from click import Option
 from sqlalchemy import JSON, Column
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Field, ForeignKeyConstraint, Relationship, SQLModel
 
 from api_client.models import ElwisFtmItem, FtmValue, GeoObject
 from app.logger import get_logger
@@ -18,17 +18,14 @@ class FairwaySection(SQLModel, table=True):
     )
     ftm_year: int = Field(
         description="Year of the FTM message",
-        foreign_key="elwis_ftm.year",
         primary_key=True,
     )
     ftm_number: int = Field(
         description="Number of the FTM message",
-        foreign_key="elwis_ftm.number",
         primary_key=True,
     )
     ftm_serial_number: int = Field(
         description="Serial number of the FTM message",
-        foreign_key="elwis_ftm.serial_number",
         primary_key=True,
     )
     start_hectometer: int = Field(
@@ -40,6 +37,13 @@ class FairwaySection(SQLModel, table=True):
         default=None,
         nullable=True,
         description="End hectometer of the fairway",
+    )
+
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["ftm_year", "ftm_number", "ftm_serial_number"],
+            ["elwis_ftm.year", "elwis_ftm.number", "elwis_ftm.serial_number"],
+        ),
     )
 
     ftm_message: "ElwisFtm" = Relationship(

@@ -4,3 +4,5 @@
 *.txt
 *.pyc
 *.db
+.local/
+.pgdata/

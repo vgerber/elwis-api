@@ -1,11 +1,12 @@
 import datetime
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
-from sqlmodel import select
+from sqlalchemy import func
+from sqlmodel import funcfilter, select
 
 from api_client.models import ElwisFtmItem, ElwisFtmQueryResponse, Paging, PagingResult
 from app.database import SessionDep
-from app.models.ftm import FairwaySection
+from app.models.ftm import ElwisFtm, FairwaySection
 
 
 router = APIRouter(prefix="/ftm", tags=["Fairway Transfer Messages"])
@@ -24,49 +25,65 @@ class FtmQuery(BaseModel):
         default=None, description="FTM message hectometer start"
     )
     hectometer_end: int = Field(default=None, description="FTM message hectometer end")
-    validity_start: datetime.date = Field(
+    validity_date_start: datetime.date = Field(
         default=None, description="FTM message validity start date in ISO format"
     )
-    validity_end: datetime.date = Field(
+    validity_date_end: datetime.date = Field(
         default=None, description="FTM message validity end date in ISO format"
     )
 
 
 @router.post("/search")
 def search_ftm_messages(query: FtmQuery, session: SessionDep) -> ElwisFtmQueryResponse:
-    query_statement = select(FairwaySection)
+    # Build the base query with a join to ElwisFtm for date filtering
+    query_statement = select(FairwaySection).join(
+        ElwisFtm,
+        (FairwaySection.ftm_year == ElwisFtm.year)
+        & (FairwaySection.ftm_number == ElwisFtm.number)
+        & (FairwaySection.ftm_serial_number == ElwisFtm.serial_number),
+    )
 
+    where_clauses = []
     if query.fairway_name:
-        query_statement = query_statement.where(
-            FairwaySection.fairway_name == query.fairway_name
-        )
+        where_clauses.append(FairwaySection.fairway_name == query.fairway_name)
     if query.number:
-        query_statement = query_statement.where(
-            FairwaySection.ftm_number == query.number
-        )
+        where_clauses.append(FairwaySection.ftm_number == query.number)
     if query.year:
-        query_statement = query_statement.where(FairwaySection.ftm_year == query.year)
+        where_clauses.append(FairwaySection.ftm_year == query.year)
     if query.serial_number:
-        query_statement = query_statement.where(
-            FairwaySection.ftm_serial_number == query.serial_number
-        )
+        where_clauses.append(FairwaySection.ftm_serial_number == query.serial_number)
     if query.hectometer_start is not None:
-        query_statement = query_statement.where(
-            FairwaySection.start_hectometer >= query.hectometer_start
-        )
+        where_clauses.append(FairwaySection.start_hectometer >= query.hectometer_start)
     if query.hectometer_end is not None:
-        query_statement = query_statement.where(
-            FairwaySection.end_hectometer <= query.hectometer_end
-        )
-    if query.validity_start:
-        query_statement = query_statement.where(
-            FairwaySection.ftm_message.validity_date_start >= query.validity_start
-        )
-    if query.validity_end:
-        query_statement = query_statement.where(
-            FairwaySection.ftm_message.validity_date_end <= query.validity_end
-        )
+        where_clauses.append(FairwaySection.end_hectometer <= query.hectometer_end)
+    if query.validity_date_start:
+        where_clauses.append(ElwisFtm.validity_date_start >= query.validity_date_start)
+    if query.validity_date_end:
+        where_clauses.append(ElwisFtm.validity_date_end <= query.validity_date_end)
 
+    if where_clauses:
+        query_statement = query_statement.where(*where_clauses)
+
+    # Apply the same join and where clauses to the count query
+    total_count = None
+    if query.paging.total_count:
+        count_stmt = (
+            select(func.count())
+            .select_from(FairwaySection)
+            .join(
+                ElwisFtm,
+                (FairwaySection.ftm_year == ElwisFtm.year)
+                & (FairwaySection.ftm_number == ElwisFtm.number)
+                & (FairwaySection.ftm_serial_number == ElwisFtm.serial_number),
+            )
+        )
+        if where_clauses:
+            count_stmt = count_stmt.where(*where_clauses)
+        total_count = session.exec(count_stmt).one()
+
+    query_statement = query_statement.offset(query.paging.offset).limit(
+        query.paging.limit
+    )
     fairway_sections = session.exec(query_statement).all()
 
     messages = [
@@ -74,6 +91,8 @@ def search_ftm_messages(query: FtmQuery, session: SessionDep) -> ElwisFtmQueryRe
     ]
 
     return ElwisFtmQueryResponse(
-        paging_result=PagingResult(offset=0, count=0, total_count=100),
+        paging_result=PagingResult(
+            offset=query.paging.offset, count=len(messages), total_count=total_count
+        ),
         messages=messages,
     )
