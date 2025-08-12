@@ -2,7 +2,7 @@ import datetime
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 from sqlalchemy import func
-from sqlmodel import funcfilter, select
+from sqlmodel import select
 
 from api_client.models import ElwisFtmItem, ElwisFtmQueryResponse, Paging, PagingResult
 from app.database import SessionDep
@@ -19,7 +19,7 @@ class FtmQuery(BaseModel):
     )
     number: str = Field(default=None, description="FTM message number")
     year: int = Field(default=None, description="FTM message year")
-    serial_number: str = Field(default=None, description="FTM message serial number")
+    serial_number: int = Field(default=None, description="FTM message serial number")
     fairway_name: str = Field(default=None, description="FTM message fairway name")
     hectometer_start: int = Field(
         default=None, description="FTM message hectometer start"
