@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/vgerber/elwis-api/compare/v1.1.0...v1.1.1) (2025-08-12)
+
+
+### Bug Fixes
+
+* Fixed serial number query ([c9a2a7d](https://github.com/vgerber/elwis-api/commit/c9a2a7d87c8b7c8434b0b2f506f0db33061be96a))
+
 # [1.1.0](https://github.com/vgerber/elwis-api/compare/v1.0.3...v1.1.0) (2025-08-12)
 
 
