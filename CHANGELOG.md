@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/vgerber/elwis-api/compare/v1.0.3...v1.1.0) (2025-08-12)
+
+
+### Features
+
+* Switch to postgres ([0d5e336](https://github.com/vgerber/elwis-api/commit/0d5e3362d8b9999df00f1a9636c516e52db233f8))
+
 ## [1.0.3](https://github.com/vgerber/elwis-api/compare/v1.0.2...v1.0.3) (2025-08-12)
 
 
