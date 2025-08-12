@@ -22,3 +22,12 @@ services:
       POSTGRES_PORT: 5432
     ports:
       - "8000:8000"
+    secrets:
+      - cache_update_user
+      - cache_update_password
+
+secrets:
+  cache_update_user:
+    file: ./secrets/cache_update_user
+  cache_update_password:
+    file: ./secrets/cache_update_password

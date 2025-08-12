@@ -8,7 +8,19 @@
    docker build -t vgerber/elwis-server:latest .
    ```
 
-2. **Run with Docker Compose:**
+2. **Set up secrets for cache update authentication:**
+
+   Create the `secrets` directory and the required files:
+
+   ```bash
+   mkdir -p secrets
+   echo "your-username" > secrets/cache_update_user
+   echo "your-password" > secrets/cache_update_password
+   ```
+
+   Replace `your-username` and `your-password` with your desired credentials.
+
+3. **Run with Docker Compose:**
    ```
    docker compose up
    ```
@@ -18,6 +30,7 @@ This will start both the FastAPI server and a PostgreSQL database. The database 
 - The app will be available at `http://localhost:8000` (adjust the port as needed).
 - Database connection details are set via environment variables in `docker-compose.yml`.
 - You can customize the database user, password, and name in the compose file as needed.
+- The `/cache/update` endpoint is protected with HTTP Basic Auth using the credentials from the secrets files.
 
 ### Manual Run (Advanced)
 

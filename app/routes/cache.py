@@ -1,7 +1,10 @@
 from datetime import datetime, timezone
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel
 from sqlmodel import select
+import secrets as pysecrets
+import os
 
 from app.database import SessionDep
 from app.elwis_api import fetch_all_messages_for_day
@@ -18,6 +21,8 @@ logger = get_logger()
 
 router = APIRouter(prefix="/cache", tags=["Cache"])
 
+security = HTTPBasic()
+
 
 class CacheMetadataResponse(BaseModel):
     last_updated: datetime
@@ -32,7 +37,31 @@ def get_cache_info(session: SessionDep) -> CacheMetadataResponse:
 
 
 @router.post("/update", status_code=204)
-def update_cache(session: SessionDep) -> None:
+def update_cache(
+    session: SessionDep,
+    credentials: HTTPBasicCredentials = Depends(security),
+) -> None:
+    # Read credentials from secrets file or env
+    username_path = "/run/secrets/cache_update_user"
+    password_path = "/run/secrets/cache_update_password"
+    try:
+        with open(username_path) as f:
+            expected_username = f.read().strip()
+        with open(password_path) as f:
+            expected_password = f.read().strip()
+    except Exception:
+        expected_username = os.getenv("CACHE_UPDATE_USER", "admin")
+        expected_password = os.getenv("CACHE_UPDATE_PASSWORD", "admin")
+
+    correct_username = pysecrets.compare_digest(credentials.username, expected_username)
+    correct_password = pysecrets.compare_digest(credentials.password, expected_password)
+    if not (correct_username and correct_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+
     logger.info("Updating cache...")
     cache_metadata = session.exec(select(CacheMetadata)).first()
     if not cache_metadata:
