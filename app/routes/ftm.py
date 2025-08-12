@@ -17,7 +17,7 @@ class FtmQuery(BaseModel):
         default=Paging(offset=0, limit=100, total_count=True),
         description="Paging parameters for the query",
     )
-    number: str = Field(default=None, description="FTM message number")
+    number: int = Field(default=None, description="FTM message number")
     year: int = Field(default=None, description="FTM message year")
     serial_number: int = Field(default=None, description="FTM message serial number")
     fairway_name: str = Field(default=None, description="FTM message fairway name")
