@@ -48,4 +48,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/elwis-server:${{ needs.release.outputs.new_release_version }}
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/elwis-server:${{ needs.release.outputs.new_release_version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/elwis-server:latest
