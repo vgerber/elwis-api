@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/vgerber/elwis-api/compare/v1.1.1...v1.2.0) (2025-08-12)
+
+
+### Bug Fixes
+
+* Fixed nts number query ([a34d565](https://github.com/vgerber/elwis-api/commit/a34d565f0aad233aa833fc0fe018c5ea22173004))
+
+
+### Features
+
+* Added http basic auth protection ([c82299f](https://github.com/vgerber/elwis-api/commit/c82299f6b5034025855d3f0b41c27d812dec7707))
+
 ## [1.1.1](https://github.com/vgerber/elwis-api/compare/v1.1.0...v1.1.1) (2025-08-12)
 
 
