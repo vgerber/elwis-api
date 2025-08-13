@@ -42,16 +42,16 @@ def update_cache(
     credentials: HTTPBasicCredentials = Depends(security),
 ) -> None:
     # Read credentials from secrets file or env
-    username_path = "/run/secrets/cache_update_user"
-    password_path = "/run/secrets/cache_update_password"
+    username_path = "/run/secrets/admin_user"
+    password_path = "/run/secrets/admin_password"
     try:
         with open(username_path) as f:
             expected_username = f.read().strip()
         with open(password_path) as f:
             expected_password = f.read().strip()
     except Exception:
-        expected_username = os.getenv("CACHE_UPDATE_USER", "admin")
-        expected_password = os.getenv("CACHE_UPDATE_PASSWORD", "admin")
+        expected_username = os.getenv("ADMIN_USER", "admin")
+        expected_password = os.getenv("ADMIN_PASSWORD", "changeme")
 
     correct_username = pysecrets.compare_digest(credentials.username, expected_username)
     correct_password = pysecrets.compare_digest(credentials.password, expected_password)
