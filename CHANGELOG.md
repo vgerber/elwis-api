@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/vgerber/elwis-api/compare/v1.2.0...v1.3.0) (2025-08-13)
+
+
+### Features
+
+* Changed update user to admin ([ee2b73c](https://github.com/vgerber/elwis-api/commit/ee2b73c21d5eca6f99a9147782441a724e085549))
+
 # [1.2.0](https://github.com/vgerber/elwis-api/compare/v1.1.1...v1.2.0) (2025-08-12)
 
 
