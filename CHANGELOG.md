@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/vgerber/elwis-api/compare/v1.4.1...v1.4.2) (2025-08-16)
+
+
+### Bug Fixes
+
+* Changed release builds to tag creation ([900bd67](https://github.com/vgerber/elwis-api/commit/900bd67ee4d86579c3e7f962a5deb6510283f383))
+
 ## [1.4.1](https://github.com/vgerber/elwis-api/compare/v1.4.0...v1.4.1) (2025-08-16)
 
 
