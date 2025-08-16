@@ -54,6 +54,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/elwis-server:latest
   generate-typescript-client:
     needs: release
+    if: needs.release.outputs.new_release_published == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
