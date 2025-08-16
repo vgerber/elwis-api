@@ -24,6 +24,7 @@ jobs:
             @semantic-release/commit-analyzer
             @semantic-release/release-notes-generator
             @semantic-release/github
+            @kdcro101/semantic-release-py
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
