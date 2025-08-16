@@ -23,6 +23,7 @@ jobs:
 
       - name: Start FastAPI server
         run: |
+          export DB_TYPE=sqlite
           fastapi run app/main.py --port 8000 &
           sleep 10
 
