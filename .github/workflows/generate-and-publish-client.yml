@@ -1,0 +1,51 @@
+name: Generate and Publish TypeScript Client
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate-client:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install uv
+          uv pip install --system .
+
+      - name: Start FastAPI server
+        run: |
+          fastapi run app/main.py --port 8000 &
+          sleep 10
+
+      - name: Download OpenAPI schema
+        run: |
+          curl http://127.0.0.1:8000/openapi.json -o openapi.json
+
+      - name: Generate TypeScript client
+        uses: openapi-generators/openapitools-generator-action@v1
+        with:
+          generator: typescript-fetch
+          openapi-file: openapi.json
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org/"
+
+      - name: Publish to npm
+        run: |
+          cd typescript-fetch-client
+          npm install
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
