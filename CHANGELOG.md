@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/vgerber/elwis-api/compare/v1.4.0...v1.4.1) (2025-08-16)
+
+
+### Bug Fixes
+
+* Fixed api client deployment ([6c658cb](https://github.com/vgerber/elwis-api/commit/6c658cbe44ca3014e923b5a59615c00daf4f14b6))
+
 # [1.4.0](https://github.com/vgerber/elwis-api/compare/v1.3.0...v1.4.0) (2025-08-16)
 
 

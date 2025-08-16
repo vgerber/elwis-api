@@ -1,6 +1,6 @@
 {
   "name": "elwis-api",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Elwis Server API client.",
   "files": [
     "*",
