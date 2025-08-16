@@ -1,5 +1,5 @@
 {
-  "name": "@vgerber/elwis-api",
+  "name": "elwis-api",
   "version": "1.4.0",
   "description": "Elwis Server API client.",
   "files": [
