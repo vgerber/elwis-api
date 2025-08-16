@@ -2,38 +2,17 @@ name: Build and Push Docker Image with Semantic Release
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "*"
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    outputs:
-      new_release_published: ${{ steps.semantic_release.outputs.new_release_published }}
-      new_release_version: ${{ steps.semantic_release.outputs.new_release_version }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Semantic Release
-        id: semantic_release
-        uses: cycjimmy/semantic-release-action@v4
-        with:
-          extra_plugins: |
-            @semantic-release/changelog
-            @semantic-release/git
-            @semantic-release/commit-analyzer
-            @semantic-release/release-notes-generator
-            @semantic-release/github
-            semantic-release-replace-plugin
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   build-and-push:
-    needs: release
-    if: needs.release.outputs.new_release_published == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Get version from tag
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -50,14 +29,16 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/elwis-server:${{ needs.release.outputs.new_release_version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/elwis-server:${{ env.VERSION }}
             ${{ secrets.DOCKERHUB_USERNAME }}/elwis-server:latest
+
   generate-typescript-client:
-    needs: release
-    if: needs.release.outputs.new_release_published == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set VERSION from tag
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
 
       - name: Set up Python
         uses: actions/setup-python@v5
