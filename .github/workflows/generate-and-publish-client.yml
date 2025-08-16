@@ -37,6 +37,12 @@ jobs:
           generator: typescript-fetch
           openapi-file: openapi.json
 
+      - name: Upload generated TypeScript client as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: typescript-fetch-client
+          path: typescript-fetch-client
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
