@@ -1,6 +1,6 @@
 [project]
 name = "elwis-api"
-version = "1.4.3"
+version = "1.4.4"
 description = ""
 readme = "README.md"
 dependencies = [
