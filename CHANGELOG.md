@@ -1,3 +1,10 @@
+## [1.4.5](https://github.com/vgerber/elwis-api/compare/v1.4.4...v1.4.5) (2025-08-16)
+
+
+### Bug Fixes
+
+* Fixed token ([b5577ea](https://github.com/vgerber/elwis-api/commit/b5577eabd0dd7919bd5d6108270fcc4ffb384a1d))
+
 ## [1.4.4](https://github.com/vgerber/elwis-api/compare/v1.4.3...v1.4.4) (2025-08-16)
 
 
