@@ -9,11 +9,15 @@
     [
       "semantic-release-replace-plugin",
       {
-        "files": [
-          "pyproject.toml"
-        ],
-        "from": "version = \"[0-9]+\\.[0-9]+\\.[0-9]+\"",
-        "to": "version = \"${nextRelease.version}\""
+        "replacements": [
+          {
+            "files": [
+              "pyproject.toml"
+            ],
+            "from": "version = \"[0-9]+\\.[0-9]+\\.[0-9]+\"",
+            "to": "version = \"${nextRelease.version}\""
+          }
+        ]
       }
     ],
     [
@@ -23,7 +27,7 @@
           "CHANGELOG.md",
           "pyproject.toml"
         ],
-        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
       }
     ],
     "@semantic-release/github"
