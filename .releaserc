@@ -7,9 +7,13 @@
     "@semantic-release/release-notes-generator",
     "@semantic-release/changelog",
     [
-      "@kdcro101/semantic-release-py",
+      "semantic-release-replace-plugin",
       {
-        "pyproject": "pyproject.toml"
+        "files": [
+          "pyproject.toml"
+        ],
+        "from": "version = \"[0-9]+\\.[0-9]+\\.[0-9]+\"",
+        "to": "version = \"${nextRelease.version}\""
       }
     ],
     [
