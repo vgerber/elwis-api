@@ -1,23 +1,20 @@
 name: Build and Push Docker Image with Semantic Release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "*"
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Get version from tag or release
-        run: |
-          if [ -n "$GITHUB_REF_NAME" ]; then
-            echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
-          else
-            VERSION=$(jq -r .release.tag_name "$GITHUB_EVENT_PATH")
-            echo "VERSION=${VERSION#v}" >> $GITHUB_ENV
-          fi
+      - name: Get version from tag
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -36,20 +33,18 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/elwis-server:${{ env.VERSION }}
             ${{ secrets.DOCKERHUB_USERNAME }}/elwis-server:latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
   generate-typescript-client:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Get version from tag or release
-        run: |
-          if [ -n "$GITHUB_REF_NAME" ]; then
-            echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
-          else
-            VERSION=$(jq -r .release.tag_name "$GITHUB_EVENT_PATH")
-            echo "VERSION=${VERSION#v}" >> $GITHUB_ENV
-          fi
+      - name: Get version from tag
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -93,3 +88,5 @@ jobs:
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GH_PAT }}

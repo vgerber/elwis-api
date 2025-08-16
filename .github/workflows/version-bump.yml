@@ -1,4 +1,4 @@
-name: Build and Push Docker Image with Semantic Release
+name: Semantic Release
 
 on:
   push:
