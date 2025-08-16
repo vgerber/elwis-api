@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/vgerber/elwis-api/compare/v1.3.0...v1.4.0) (2025-08-16)
+
+
+### Features
+
+* Added sqlite database option ([0830c96](https://github.com/vgerber/elwis-api/commit/0830c968c9edc2492f0af87ba16526f1b0d11654))
+
 # [1.3.0](https://github.com/vgerber/elwis-api/compare/v1.2.0...v1.3.0) (2025-08-13)
 
 
