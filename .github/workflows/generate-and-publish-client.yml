@@ -45,9 +45,8 @@ jobs:
 
       - name: Publish to npm
         run: |
-          ls -l
+          cp clients/typescript/package.json typescript-fetch-client/package.json
           cd typescript-fetch-client
-          ls -l
           npm install
           npm publish --access public
         env:

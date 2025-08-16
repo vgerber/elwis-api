@@ -1,6 +1,5 @@
 .vscode
 .venv
-*.json
 *.txt
 *.pyc
 *.db

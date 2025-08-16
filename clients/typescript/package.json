@@ -1,0 +1,28 @@
+{
+  "name": "@vgerber/elwis-api",
+  "version": "1.4.0",
+  "description": "Elwis Server API client.",
+  "files": [
+    "*",
+    "package.json"
+  ],
+  "ignore": [
+    "node_modules",
+    "dist",
+    ".npmignore"
+  ],
+  "main": "index.js",
+  "types": "*.ts",
+  "scripts": {
+    "build": "tsc",
+    "prettier:write": "prettier --write *.ts"
+  },
+  "keywords": [
+    "Elwis"
+  ],
+  "author": "",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.4.2"
+  }
+}
