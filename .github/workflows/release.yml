@@ -94,8 +94,10 @@ jobs:
       - name: Publish to npm
         run: |
           cp clients/typescript/package.json typescript-fetch-client/package.json
+          cp clients/typescript/tsconfig.json typescript-fetch-client/tsconfig.json
           cd typescript-fetch-client
           npm install
+          npm run build
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

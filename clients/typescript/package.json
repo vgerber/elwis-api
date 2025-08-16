@@ -11,8 +11,8 @@
     "dist",
     ".npmignore"
   ],
-  "main": "index.js",
-  "types": "*.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "prettier:write": "prettier --write *.ts"
